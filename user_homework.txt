@@ -1,0 +1,5 @@
+Hello world.
+On each line of the file you check if the user word exists in the line.
+User decides (based on the input) if he wants to add it to the results.
+After the file reading is finished app returns the results and the amount of added user lines.
+Complete the examples on a classwork.

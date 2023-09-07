@@ -3,3 +3,4 @@ lesson_02/dev_2.py
 venv
 rockyou.txt
 .vscode/
+__pycache__

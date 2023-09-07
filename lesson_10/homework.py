@@ -1,64 +1,55 @@
-from datetime import datetime
+from abc import ABC, abstractmethod
 from typing import List
+from time import time
 
-class SocialChannel:
-    def __init__(self, type: str, followers: int):
-        self.type = type
+class SocialChannel(ABC):
+    def __init__(self, name: str, followers: int):
+        self.name = name
         self.followers = followers
 
+    @abstractmethod
+    def post_message(self, message: str):
+        pass
+
+class YouTubeChannel(SocialChannel):
+    def post_message(self, message: str):
+        print(f"Posting on YouTube: {message}")
+
+class FacebookChannel(SocialChannel):
+    def post_message(self, message: str):
+        print(f"Posting on Facebook: {message}")
+
+class TwitterChannel(SocialChannel):
+    def post_message(self, message: str):
+        print(f"Posting on Twitter: {message}")
+
 class Post:
-    def __init__(self, caption: str, timestamp: datetime, channels: List[SocialChannel]):
-        self.caption = caption
+    def __init__(self, message: str, timestamp: int):
+        self.message = message
         self.timestamp = timestamp
-        self.channels = channels
 
-class SocialHero:
-    def __init__(self):
-        self.channels = []
-        self.posts = []
+def process_schedule(posts: List[Post], channels: List[SocialChannel]) -> None:
+    current_time = time()  
+    for post in posts:
+        if post.timestamp <= current_time:
+            for channel in channels:
+                channel.post_message(post.message)
 
-    def post_to_youtube(self, channel: SocialChannel, message: str) -> None:
-        print(f"Posting to YouTube: {message}")
+# Example:
 
-    def post_to_facebook(self, channel: SocialChannel, message: str) -> None:
-        print(f"Posting to Facebook: {message}")
 
-    def post_to_twitter(self, channel: SocialChannel, message: str) -> None:
-        print(f"Posting to Twitter: {message}")
+youtube_channel = YouTubeChannel("youtube", 1200000)
+facebook_channel = FacebookChannel("facebook", 500000)
+twitter_channel = TwitterChannel("twitter", 200000)
 
-    def post_a_message(self, channel: SocialChannel, message: str) -> None:
-        if channel.type == "youtube":
-            self.post_to_youtube(channel, message)
-        elif channel.type == "facebook":
-            self.post_to_facebook(channel, message)
-        elif channel.type == "twitter":
-            self.post_to_twitter(channel, message)
 
-    def process_schedule(self) -> None:
-        current_time = datetime.now()
-        for post in self.posts:
-            if post.timestamp <= current_time:
-                for channel in self.channels:
-                    self.post_a_message(channel, post.caption)
+posts = [
+    Post("Check out my new video!", 1630848000),
+    Post("Exciting news coming tomorrow!", 1630934400),  
+]
 
-# Example
-if __name__ == "__main__":
-    hero = SocialHero()
 
-    youtube_channel = SocialChannel("youtube", 1000)
-    facebook_channel = SocialChannel("facebook", 5000)
-    twitter_channel = SocialChannel("twitter", 2000)
-    
-    hero.channels.append(youtube_channel)
-    hero.channels.append(facebook_channel)
-    hero.channels.append(twitter_channel)
+channels = [youtube_channel, facebook_channel, twitter_channel]
 
-    post1 = Post("Hello!", datetime.now(), [youtube_channel, facebook_channel])
-    post2 = Post("Check my new video!", datetime.now(), [youtube_channel, twitter_channel])
-    post3 = Post("New stream today!", datetime.now(), [facebook_channel, twitter_channel])
 
-    hero.posts.append(post1)
-    hero.posts.append(post2)
-    hero.posts.append(post3)
-
-    hero.process_schedule()
+process_schedule(posts, channels)
